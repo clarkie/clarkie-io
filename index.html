@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Clarkie - That's me!</title>
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+</head>
+<body>
+
+
+	<div class="container">
+		<h1>Clarkie.IO</h1>
+		<hr />
+		<div class="page">
+			
+			<div class="row" id="article-summary">
+
+			
+			</div>
+
+		</div>
+	</div>
+
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.2/jquery.min.js" type="text/javascript"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.2/underscore-min.js" type="text/javascript"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/0.9.2/backbone-min.js"></script>
+
+
+	<script type="text/template" id="summary_template">
+		<% _.each( siteSummary, function( article ){ %>
+			<h4><%= article.get("title") %></h4>
+			<p><%= article.get("body") %></p>
+		<% }); %>
+
+	</script>
+	<script type="text/javascript">
+
+
+		/********************************************************/
+		/* Models 												*/
+		/********************************************************/
+		var Article = Backbone.Model.extend({
+			defaults: {
+				title: "Not specified",
+				body: "Not specified"
+			},
+			initialize: function(){
+				console.log("An article created!");
+			}
+		});
+
+		var Articles = Backbone.Collection.extend({
+			model: Article
+		});
+
+		var article1 = new Article({ title: "Technical Debt", body: "How do you prevent your code from falling off the cliff?" });
+		var article2 = new Article({ title: "I love graphs!", body: "Graphite and statsd intro at ConcretePlatform" });
+		var article3 = new Article({ title: "Delete code", body: "Fisheye and deleteing code. 16 million lines of code to 750k" });
+		var article4 = new Article({ title: "Database Analysis", body: "Looking at optimisation techniques from an outsiders point of view" });
+		var article5 = new Article();
+
+
+		var siteSummary = new Articles([ article1, article2, article3, article4, article5]);
+
+		/********************************************************/
+		/* Views 												*/
+		/********************************************************/
+
+		SummaryView = Backbone.View.extend({
+			initialize: function(){
+				//this.render();
+			},
+			render: function(){
+				var template = _.template( $("#summary_template").html(), { siteSummary: siteSummary.models } );
+				this.$el.html( template );
+			}
+		});
+
+
+		var summary_view = new SummaryView({ el: $("#article-summary") });
+
+
+		/********************************************************/
+		/* Router 												*/
+		/********************************************************/
+		var Router = Backbone.Router.extend({
+				routes: {
+					"": "home", 
+					"article/:id": "fullArticle",
+				}
+		});
+
+		var router = new Router;
+		router.on('route:home', function() {
+			// render user list
+		 	summary_view.render();
+		});
+		router.on('route:fullArticle', function(id) {
+			//userEditView.render({id: id});
+		});
+		Backbone.history.start();
+	</script>
+
+
+</body>
+</html> 
