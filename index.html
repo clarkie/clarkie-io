@@ -10,7 +10,11 @@
 
 	<div class="container">
 		<h1>Clarkie IO
-		<small><a href="https://www.linkedin.com/in/clarkie1" target="_blank" class="icon-stack">
+		<small>
+			<a href="#/" class="icon-stack">
+						<i class="icon-home"></i>
+					</a>
+				<a href="https://www.linkedin.com/in/clarkie1" target="_blank" class="icon-stack">
 						<i class="icon-linkedin"></i>
 					</a>
 					<a href="https://twitter.com/clarkieclarkie" target="_blank" class="icon-stack">
@@ -23,20 +27,14 @@
 		</h1>
 		<hr />
 		
-		<div id="article-summary" class="page"></div>
+		<div class="page row"></div>
 		
-		<footer class="footer">
-			<div class="container">
-			     <nav>
-			     	<h1>
-					
-					</h1>
-				</nav>
-			</div>
-		</footer>
 		<div class="row">
 			<p class="text-muted credit">&copy; copyright 2013. Clarkie. All Rights Reserved.</p>
 		</div>
+
+
+		
 	</div>
 
 
@@ -46,17 +44,24 @@
 	<script src="js/backbone.js" type="text/javascript"></script>
 
 	<script type="text/template" id="summary_template">
-		<div class="row">
 			<% _.each( siteSummary, function( article ){ %>
 
   				<div class="col-xs-12 col-sm-6 col-md-4">
-				<h3 class="text-primary"><i class="icon-bulb"></i><%= article.get("title") %></h3>
+				<h3 class="text-primary"><i class="icon-bulb"></i><a href="#/article/<%= article.get("id") %>"><%= article.get("title") %></a></h3>
 				<p><%= article.get("body") %></p>
 				</div>
 			<% }); %>
-		</div>
 
 	</script>
+
+	<script type="text/template" id="detail_template">
+			<div class="col-xs-12">
+				<h3 class="text-primary"><%= article.get("title") %></h3>
+				<p><%= article.get("body") %></p>
+			</div>
+	</script>
+
+
 	<script type="text/javascript">
 
 
@@ -64,44 +69,59 @@
 		/* Models 												*/
 		/********************************************************/
 		var Article = Backbone.Model.extend({
+			//urlRoot: '/rest/articles',
+			urlRoot: function() {
+				return '/rest/articles/';
+			},
 			defaults: {
 				title: "Not specified",
 				body: "Not specified"
-			},
-			initialize: function(){
-				console.log("An article created!");
 			}
 		});
 
 		var Articles = Backbone.Collection.extend({
-			model: Article
+			model: Article,
+			url: '/rest/articles/'
 		});
 
-		var article1 = new Article({ title: "Technical Debt", body: "How do you prevent your code from falling off the cliff?" });
-		var article2 = new Article({ title: "I love graphs!", body: "Graphite and statsd intro at ConcretePlatform" });
-		var article3 = new Article({ title: "Delete code", body: "Fisheye and deleteing code. 16 million lines of code to 750k" });
-		var article4 = new Article({ title: "Database Analysis", body: "Looking at optimisation techniques from an outsiders point of view" });
-		var article5 = new Article();
-
-
-		var siteSummary = new Articles([ article1, article2, article3, article4, article5]);
 
 		/********************************************************/
 		/* Views 												*/
 		/********************************************************/
 
 		SummaryView = Backbone.View.extend({
-			initialize: function(){
-				//this.render();
-			},
 			render: function(){
-				var template = _.template( $("#summary_template").html(), { siteSummary: siteSummary.models } );
-				this.$el.html( template );
+				var that = this;
+				var siteSummary = new Articles();
+				siteSummary.fetch({
+					success: function() {
+						var template = _.template( $("#summary_template").html(), { siteSummary: siteSummary.models } );
+						that.$el.html( template );
+					}
+				})
+
+			}
+		});
+
+		DetailView = Backbone.View.extend({
+			render: function(options) {
+				var that = this;
+				var thisArticle = new Article({id: options.id});
+				console.log(options);
+				thisArticle.fetch({
+					success: function(article) {
+						console.log(article);
+						var template = _.template ($("#detail_template").html(), {article: article});
+						that.$el.html( template );
+					}
+
+				});
 			}
 		});
 
 
-		var summary_view = new SummaryView({ el: $("#article-summary") });
+		var summary_view = new SummaryView({ el: $(".page") });
+		var detail_view = new DetailView({ el: $(".page")});
 
 
 		/********************************************************/
@@ -116,12 +136,10 @@
 
 		var router = new Router;
 		router.on('route:home', function() {
-			// render user list
 		 	summary_view.render();
 		});
 		router.on('route:fullArticle', function(id) {
-			console.log('fullArticle');
-			//userEditView.render({id: id});
+			detail_view.render({id: id});
 		});
 		Backbone.history.start();
 	</script>
