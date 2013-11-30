@@ -1,4 +1,5 @@
 <!doctype html>
+
 <html lang="en">
 <head>
 	<meta charset="utf-8">
@@ -6,6 +7,7 @@
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 <body>
+
 
 
 	<div class="container">
@@ -27,6 +29,7 @@
 		</h1>
 		<hr />
 		
+
 		<div class="page row"></div>
 		
 		<div class="row">
@@ -44,6 +47,23 @@
 	<script src="js/backbone.js" type="text/javascript"></script>
 
 	<script type="text/template" id="summary_template">
+
+		
+		<div class="jumbotron">	
+			<div class="row">
+				<div class="col-xs-12 col-md-8">
+					<p>Hi, I'm Clarkie.
+					I once went to Bali, hired a bike and board and surfed my nut off.
+					I now work at <a href="http://www.concreteplatform.com">ConcretePlatform</a> as one of their technical bods.
+					Here's some stuff I've beeen working on, mostly at work, but possibly not.</p>
+				</div>
+				<div class="col-xs-12 col-md-4">
+		  			<img src="img/me_300.jpg" alt="Clarkie - that's me" class="img-circle">
+				
+				</div>
+			</div>
+		</div>
+		
 			<% _.each( siteSummary, function( article ){ %>
 
   				<div class="col-xs-12 col-sm-6 col-md-4">
@@ -71,7 +91,7 @@
 		var Article = Backbone.Model.extend({
 			//urlRoot: '/rest/articles',
 			urlRoot: function() {
-				return '/rest/articles/';
+				return '/rest/api/articles/';
 			},
 			defaults: {
 				title: "Not specified",
@@ -81,7 +101,7 @@
 
 		var Articles = Backbone.Collection.extend({
 			model: Article,
-			url: '/rest/articles/'
+			url: '/rest/api/articles/'
 		});
 
 
