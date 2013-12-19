@@ -52,4 +52,8 @@
 .icon-bulb:before {
 	content: "\e605";
 }
-ss
+
+body{
+	background-image: url(/img/lightbg.png);
+}
+
