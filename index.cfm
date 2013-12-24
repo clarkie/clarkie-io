@@ -8,8 +8,6 @@
 </head>
 <body>
 
-
-
 	<div class="container">
 		<h1>Clarkie IO
 		<small>
@@ -28,7 +26,6 @@
 		</small>
 		</h1>
 		<hr />
-
 
 		<div class="page row"></div>
 
@@ -50,23 +47,12 @@
 
 
 		<div >
-			<div class="row">
-				<div class="col-xs-12 col-md-8">
-					<p class="lead">
-					I now work at <a href="http://www.concreteplatform.com">ConcretePlatform</a> as one of their technical bods.
-					Here's some stuff I've beeen working on, mostly at work, but possibly not.</p>
-				</div>
-				<div class="col-xs-12 col-md-4">
-					<img src="img/me_300.jpg" alt="Clarkie - that's me" class="img-circle">
-
-				</div>
-			</div>
 		</div>
 
 			<% _.each( siteSummary, function( article ){ %>
 
 				<div class="col-xs-12 col-sm-6 col-md-4">
-				<h3 class="text-primary"><i class="icon-bulb"></i><a href="#/article/<%= article.get("id") %>"><%= article.get("title") %></a></h3>
+				<h3 class="text-primary"><i class="icon-bulb"></i><a href="#!/article/<%= article.get("id") %>"><%= article.get("title") %></a></h3>
 				<p><%= article.get("body") %></p>
 				</div>
 			<% }); %>
@@ -78,6 +64,8 @@
 				<h3 class="text-primary"><%= article.get("title") %></h3>
 				<p><%= article.get("body") %></p>
 			</div>
+		<div id="disqus_thread"></div>
+
 	</script>
 
 
@@ -126,22 +114,46 @@
 			render: function(options) {
 				var that = this;
 				var thisArticle = new Article({id: options.id});
-				console.log(options);
 				thisArticle.fetch({
 					success: function(article) {
-						console.log(article);
 						var template = _.template ($("#detail_template").html(), {article: article});
 						that.$el.html( template );
+						disqus_view.render({identifier: article.id});
 					}
 
 				});
 			}
 		});
 
+		var disqus_shortname = 'clarkie-io'; // required: replace example with your forum shortname
+		var disqus_url = 'http://clarkie.io';
+		var DisqusView = Backbone.View.extend({
+			el: '#disqus_thread',
+
+			initialize: function() {
+				// DISQUS universal code:
+
+				var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+				dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+				(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+
+			},
+
+			render: function(options) {
+				DISQUS.reset({
+					//options: options,
+					reload: true,
+					config: function(){
+						this.page.identifer = 'clarkie-' + options.identifer;
+						this.page.url = 'http://clarkie.io/#!/article/' + options.identifier;
+					}
+				});
+			}
+		});
 
 		var summary_view = new SummaryView({ el: $(".page") });
 		var detail_view = new DetailView({ el: $(".page")});
-
+		var disqus_view = new DisqusView();
 
 		/********************************************************/
 		/* Router 												*/
@@ -149,7 +161,7 @@
 		var Router = Backbone.Router.extend({
 				routes: {
 					"": "home",
-					"article/:id": "fullArticle",
+					"!/article/:id": "fullArticle",
 				}
 		});
 
@@ -163,10 +175,5 @@
 		Backbone.history.start();
 	</script>
 
-
-
 </body>
 </html>
-
-
-
