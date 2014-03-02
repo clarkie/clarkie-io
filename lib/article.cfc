@@ -5,8 +5,24 @@
 			,{"id": 4, "title": "Database Analysis", "body": "Looking at optimisation techniques from an outsiders point of view xdxdxfxfdxffdxfdx" }]
 			>
 
-	<cffunction access="remote" name="getArticleSummary" httpMethod="GET">
-		<cfreturn variables.tempData>
+	<cffunction access="remote" name="getArticleSummary" httpMethod="GET" >
+		<cfquery name="articles" datasource="clarkiei_main">
+			SELECT id, title, body, summary, create_date FROM article
+		</cfquery>
+		<cfset ret = []>
+		<cfloop query="articles">
+			<cfset ret.append({
+					'id' : articles.id,
+					'title' : articles.title,
+					'body' : articles.body,
+					'summary' : articles.summary,
+					'createDate' : articles.create_date
+
+				})>
+		</cfloop>
+
+		<cfreturn ret>
+
 	</cffunction>
 
 	<cffunction access="remote" name="getArticle" httpMethod="GET" restPath="{a}">
