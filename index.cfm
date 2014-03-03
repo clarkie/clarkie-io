@@ -45,15 +45,17 @@
 
 	<script type="text/template" id="summary_template">
 
-
-		<div >
+		<div class="lead">
+			<p>I've talked about creating a site for myself for over 7 years. It all started with BashistBeats, a small project I created at university, a site dedicated to hosting my DJ mixes. This is the latest incarnation and will be home to my musings on various technical topics I'm working on.</p>
+			<p>If you're interested in getting in touch feel free to drop me a message through one of the various social media links above.</p>
+			<p>Clarkie</p>
+			<hr>
 		</div>
 
 			<% _.each( siteSummary, function( article ){ %>
-
 				<div class="col-xs-12 col-sm-6 col-md-4">
 				<h3 class="text-primary"><i class="icon-bulb"></i><a href="#!/article/<%= article.get("id") %>"><%= article.get("title") %></a></h3>
-				<p><%= article.get("body") %></p>
+				<p><%= article.get("summary") %></p>
 				</div>
 			<% }); %>
 
@@ -175,5 +177,14 @@
 		Backbone.history.start();
 	</script>
 
+	<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	  ga('create', 'UA-47073255-1', 'clarkie.io');
+	  ga('send', 'pageview');
+	</script>
 </body>
 </html>
