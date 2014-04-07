@@ -37,4 +37,34 @@
 		<cfreturn ret>
 	</cffunction>
 
+	<cffunction name="save">
+		<cfargument name="articleId" required="false" default="">
+		<cfargument name="title" required="false" default="">
+		<cfargument name="summary" required="false" default="">
+		<cfargument name="body" required="false" default="">
+
+		<cfif val(arguments['articleId'])>
+			<!--- do update --->
+			<cfquery name="updArticle">
+				UPDATE article
+				SET
+					title = <cfqueryparam value="#arguments['title']#" cfsqltype="cf_sql_varchar">,
+					summary = <cfqueryparam value="#arguments['summary']#" cfsqltype="cf_sql_varchar">,
+					body = <cfqueryparam value="#arguments['body']#" cfsqltype="cf_sql_varchar">
+				WHERE
+					id = <cfqueryparam value="#arguments['articleId']#" cfsqltype="cf_sql_integer">
+			</cfquery>
+		<cfelse>
+			<!--- do insert --->
+			<cfquery name="insArticle">
+				INSERT INTO article (title,summary,body) VALUES (
+					<cfqueryparam value="#arguments['title']#" cfsqltype="cf_sql_varchar">,
+					<cfqueryparam value="#arguments['summary']#" cfsqltype="cf_sql_varchar">,
+					<cfqueryparam value="#arguments['body']#" cfsqltype="cf_sql_varchar">
+				)
+			</cfquery>
+		</cfif>
+
+	</cffunction>
+
 </cfcomponent>
