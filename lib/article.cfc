@@ -1,7 +1,7 @@
 <cfcomponent restpath="/articles" rest="true">
 
 	<cffunction localmode="modern" access="remote" name="getArticleSummary" httpMethod="GET" >
-		<cfquery name="articles" datasource="#application.defaultDatasource#">
+		<cfquery name="articles" datasource="clarkiei_main">
 			SELECT id, title, body, summary, create_date FROM article
 		</cfquery>
 		<cfset ret = []>
@@ -22,7 +22,7 @@
 
 	<cffunction localmode="modern" access="remote" name="getArticle" httpMethod="GET" restPath="{a}">
 		<cfargument name="a" restargsource="path">
-		<cfquery name="article" datasource="#application.defaultDatasource#">
+		<cfquery name="article" datasource="clarkiei_main">
 			SELECT id, title, body, summary, create_date FROM article
 			WHERE id = <cfqueryparam value="#arguments['a']#" cfsqltype="cf_sql_integer">
 		</cfquery>
@@ -45,7 +45,7 @@
 
 		<cfif val(arguments['articleId'])>
 			<!--- do update --->
-			<cfquery name="updArticle" datasource="#application.defaultDatasource#">
+			<cfquery name="updArticle" datasource="clarkiei_main">
 				UPDATE article
 				SET
 					title = <cfqueryparam value="#arguments['title']#" cfsqltype="cf_sql_varchar">,
@@ -56,7 +56,7 @@
 			</cfquery>
 		<cfelse>
 			<!--- do insert --->
-			<cfquery name="insArticle" datasource="#application.defaultDatasource#">
+			<cfquery name="insArticle" datasource="clarkiei_main">
 				INSERT INTO article (title,summary,body) VALUES (
 					<cfqueryparam value="#arguments['title']#" cfsqltype="cf_sql_varchar">,
 					<cfqueryparam value="#arguments['summary']#" cfsqltype="cf_sql_varchar">,
